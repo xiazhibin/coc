@@ -14,7 +14,24 @@ Bootstrap(app)
 redis_store = FlaskRedis(app)
 coc_api = COCApi(app.config['COC_TOKEN'])
 
-huo_wu_qing_chun = '#9R9VLJOP'
+# huo_wu_qing_chun = '#9R9VLJOP'
+huo_wu_qing_chun = '#RY2VYVOR'
+Each = 10
+rv = []
+for i in range(100):
+    b = dict()
+
+    my = dict()
+    op = dict()
+    b['clan'] = my
+    b['opponent'] = op
+    my['name'] = u'fuxk'
+    op['name'] = u'you'
+    if i % 2 == 0:
+        b['result'] = u'win'
+    else:
+        b['result'] = u'lose'
+    rv.append(b)
 
 
 #
@@ -40,5 +57,12 @@ huo_wu_qing_chun = '#9R9VLJOP'
 #     return jsonify(rv)
 
 @app.route('/')
-def test():
+def index():
+    # status_code, rv = coc_api.get_war_log(huo_wu_qing_chun, {})
     return render_template('index.html')
+
+
+@app.route('/data/<int:page>')
+def data(page=0):
+    q = rv[page * Each:(page + 1) * Each]
+    return jsonify(q)

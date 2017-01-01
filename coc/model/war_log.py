@@ -15,4 +15,4 @@ class WarLog(object):
 
     def __str__(self):
         return u'{0} vs {1} \n结果:{2} \nat {3} \n'.format(self.clan['name'], self.opponent['name'], self.result,
-                                                         self.timeStamp).encode('utf-8')
+                                                         self.timestamp).encode('utf-8')
