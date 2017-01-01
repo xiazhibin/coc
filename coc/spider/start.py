@@ -5,6 +5,7 @@ from coc.model.war_log import WarLog
 from coc.util import get_logger
 
 huo_wu_qing_chun = '#9R9VLJOP'
+logger = get_logger('spider_coc')
 
 
 def run():
@@ -13,7 +14,6 @@ def run():
 
 
 def clans():
-    logger = get_logger('spider_coc')
     from coc.cache import cache_war_log, get_war_log_size, incr_war_log_size
     from coc import coc_api, redis_store
     size = get_war_log_size(redis_store, huo_wu_qing_chun)
@@ -31,7 +31,6 @@ def clans():
 
 
 def clan_info():
-    logger = get_logger('spider_coc')
     from coc import coc_api, redis_store
     status_code, rv = coc_api.get_clan_info(huo_wu_qing_chun)
     if status_code == 200:
@@ -41,6 +40,3 @@ def clan_info():
             m.data.update({'last_update': time.time()})
             cache_clan_info(redis_store, huo_wu_qing_chun, m.data)
             logger.info(str(m))
-
-
-run()
