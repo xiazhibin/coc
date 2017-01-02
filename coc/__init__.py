@@ -1,6 +1,8 @@
 # coding=utf-8
 import time
-from flask import Flask, jsonify, render_template
+from operator import itemgetter
+
+from flask import Flask, jsonify, render_template, request
 from flask_redis import FlaskRedis
 from coc.api import COCApi
 from coc.model.war_log import WarLog
@@ -14,8 +16,8 @@ Bootstrap(app)
 redis_store = FlaskRedis(app)
 coc_api = COCApi(app.config['COC_TOKEN'])
 
-# huo_wu_qing_chun = '#9R9VLJOP'
-huo_wu_qing_chun = '#RY2VYVOR'
+huo_wu_qing_chun = '#9R9VLJOP'
+# huo_wu_qing_chun = '#RY2VYVOR'
 Each = 10
 rv = []
 for i in range(100):
@@ -62,7 +64,22 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/data/<int:page>')
-def data(page=0):
-    q = rv[page * Each:(page + 1) * Each]
-    return jsonify(q)
+import json
+
+import datetime
+from operator import attrgetter
+
+@app.route('/data')
+def data():
+    offset = int(request.args.get('offset', 0))
+    limit = int(request.args.get('limit', 8))
+    from coc.cache import get_war_log
+    data = get_war_log(redis_store, huo_wu_qing_chun)
+    rv = []
+    for key, value in data.items():
+        rv.append(WarLog(json.dumps(value)))
+
+    m = sorted(rv, key=attrgetter('timestamp'), reverse=True)
+    for x in m:
+        print 'date:{0} info:{1}'.format(datetime.datetime.fromtimestamp(x.timestamp), x)
+    return jsonify()

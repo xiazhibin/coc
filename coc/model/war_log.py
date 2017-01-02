@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from coc.util import convert_utc_time, datetime_to_timestamp
+from json import JSONEncoder
 
 
 class WarLog(object):
@@ -16,3 +17,6 @@ class WarLog(object):
     def __str__(self):
         return u'{0} vs {1} \n结果:{2} \nat {3} \n'.format(self.clan['name'], self.opponent['name'], self.result,
                                                          self.timestamp).encode('utf-8')
+
+    def __json_encode__(self):
+        return {'clan': self.clan['name'], 'opponent': self.opponent['name'], 'rv': self.result}

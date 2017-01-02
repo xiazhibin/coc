@@ -1,6 +1,6 @@
 WAR_LOG = u'war_log_{0}'
 CLAN_INFO = u'clan_info'
-WAR_LOG_SIZE = u'war_log_size_{0}'
+WAR_LOG_SIZE = u'war_log_size'
 
 
 def get_war_log_size(redis_store, clan_tag):
@@ -8,9 +8,13 @@ def get_war_log_size(redis_store, clan_tag):
     return redis_store.get(name)
 
 
+def get_war_log(redis_store, clan_tag):
+    name = WAR_LOG.format(clan_tag)
+    return redis_store.hgetall(name)
+
+
 def incr_war_log_size(redis_store, clan_tag, value=1):
-    name = WAR_LOG_SIZE.format(clan_tag)
-    redis_store.incr(name, value)
+    redis_store.hincrby(WAR_LOG_SIZE, clan_tag, value)
 
 
 def cache_war_log(redis_store, clan_tag, timestamp, war_log):
