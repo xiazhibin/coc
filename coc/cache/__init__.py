@@ -6,14 +6,13 @@ import json
 
 
 def get_war_log_size(redis_store, clan_tag):
-    name = WAR_LOG_SIZE.format(clan_tag)
-    return redis_store.get(name)
+    return redis_store.hget(WAR_LOG_SIZE, clan_tag)
 
 
 def get_war_log(redis_store, clan_tag, offset=0, limit=-1):
     name = WAR_LOG.format(clan_tag)
     score_set = WAR_LOG_SCORE_SET.format(clan_tag)
-    keys = redis_store.zrevrange(score_set, offset, limit)
+    keys = redis_store.zrevrange(score_set, offset, offset + limit - 1)
     rv = []
     for key in keys:
         rv.append(json.loads(redis_store.hget(name, key)))
