@@ -69,17 +69,17 @@ import json
 import datetime
 from operator import attrgetter
 
+
 @app.route('/data')
 def data():
     offset = int(request.args.get('offset', 0))
-    limit = int(request.args.get('limit', 8))
+    limit = int(request.args.get('limit', -1))
     from coc.cache import get_war_log
-    data = get_war_log(redis_store, huo_wu_qing_chun)
+    data = get_war_log(redis_store, huo_wu_qing_chun, offset, limit)
     rv = []
-    for key, value in data.items():
-        rv.append(WarLog(json.dumps(value)))
-
-    m = sorted(rv, key=attrgetter('timestamp'), reverse=True)
-    for x in m:
-        print 'date:{0} info:{1}'.format(datetime.datetime.fromtimestamp(x.timestamp), x)
+    for value in data:
+        m = WarLog(value)
+        print m
+        rv.append(m)
+    print len(data)
     return jsonify()
